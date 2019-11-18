@@ -61,16 +61,15 @@ class Network {
 	}
 
 	activate(input) {
-		let out = [], last = null;
+		let out = [], max = Object.keys(this.layer).length - 1;
 		this.each((neuron, x, count) => {
 			if (count === 0 && (input[x] === undefined || input[x] > 1)) {
 				throw new Error(`invalid activate "input" data on key "${x}" "${input[x]}"`);
 			}
-			if (last !== count) {
-				last = count;
-				out = [];
+			let n = neuron.activate((count === 0) ? input[x] : undefined);
+			if (max === count) {
+				out.push(n);
 			}
-			out.push(neuron.activate((count === 0) ? input[x] : undefined));
 		});
 		return out;
 	}
