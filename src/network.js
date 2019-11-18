@@ -1,6 +1,5 @@
 
-const Neuron = require('./neuron'),
-	copy = require('clone.util');
+const Neuron = require('./neuron');
 
 class Network {
 
@@ -64,8 +63,8 @@ class Network {
 	activate(input) {
 		let out = [], last = null;
 		this.each((neuron, x, count) => {
-			if (count === 0 && input[x] === undefined) {
-				throw new Error(`missing activate "input" data on key "${x}"`);
+			if (count === 0 && (input[x] === undefined || input[x] > 1)) {
+				throw new Error(`invalid activate "input" data on key "${x}" "${input[x]}"`);
 			}
 			if (last !== count) {
 				last = count;
@@ -78,8 +77,8 @@ class Network {
 
 	propagate(target) {
 		this.each((neuron, x, count) => {
-			if (count === 0 && target[x] === undefined) {
-				throw new Error(`missing propagate "target" data on key "${x}"`);
+			if (count === 0 && (target[x] === undefined || target[x] > 1)) {
+				throw new Error(`invalid propagate "target" data on key "${x}" "${target[x]}"`);
 			}
 			neuron.propagate((count === 0) ? target[x] : undefined);
 		}, true);
@@ -97,8 +96,8 @@ class Network {
 			for (let x in this.layer[i]) {
 				out[i][x] = {
 					id: this.layer[i][x].id,
-					incoming: copy(this.layer[i][x].incoming.weights),
-					outgoing: copy(this.layer[i][x].outgoing.weights),
+					incoming: this.layer[i][x].incoming.weights,
+					outgoing: this.layer[i][x].outgoing.weights,
 					bias: this.layer[i][x].bias,
 					squash: this.layer[i][x].squash,
 					cost: this.layer[i][x].cost,

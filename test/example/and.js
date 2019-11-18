@@ -1,5 +1,5 @@
 
-const {Network} = require('./index');
+const {Network} = require('../../index');
 
 const dataset = [
 	{inputs: [0, 0], outputs: [0]},

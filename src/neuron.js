@@ -45,9 +45,10 @@ class Neuron {
 			return (this.output = input);
 		}
 		// Σ (x • w)
-		const sum = Object.keys(this.incoming.targets).reduce((total, target) => {
-			return total += this.incoming.targets[target].output * this.incoming.weights[target];
-		}, this.bias);
+		let sum = this.bias;
+		for (let i in this.incoming.targets) {
+			sum += this.incoming.targets[i].output * this.incoming.weights[i];
+		}
 
 		this._output = _sigmoid(sum); // f'(x)
 		this.output = sigmoid(sum); // f(x)
@@ -55,11 +56,16 @@ class Neuron {
 	}
 
 	propagate(t, rate = 0.3) {
-		const sum = is.defined(t) ? this.output - t : Object.keys(this.outgoing.targets).reduce((total, target) => {
-			this.outgoing.weights[target] -= rate * this.outgoing.targets[target].error * this.output;
-			this.outgoing.targets[target].incoming.weights[this.id] = this.outgoing.weights[target];
-			return total += this.outgoing.targets[target].error * this.outgoing.weights[target];
-		}, 0);
+		let sum = 0;
+		if (!is.defined(t)) {
+			for (let i in this.outgoing.targets) {
+				this.outgoing.weights[i] -= rate * this.outgoing.targets[i].error * this.output;
+				this.outgoing.targets[i].incoming.weights[this.id] = this.outgoing.weights[i];
+				sum += this.outgoing.targets[i].error * this.outgoing.weights[i];
+			}
+		} else {
+			sum = this.output - t;
+		}
 
 		this.error = sum * this._output;
 		this.bias -= rate * this.error;
