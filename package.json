@@ -16,6 +16,7 @@
 		"extends": "eslint-config-basic"
 	},
 	"dependencies": {
+		"clone.util": "git+https://github.com/anzerr/clone.util.git",
 		"type.util": "git+https://github.com/anzerr/type.util.git",
 		"unique.util": "git+https://github.com/anzerr/unique.util.git"
 	}
